@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
-module Circuit.Adornt.Parts (nandGate, norGate, xorGate) where
+module Circuit.Adornt.Parts (nandGate, norGate, xorGate, andNotBGate, orNotBGate) where
 
 import Circuit.Adornt.Builder
 
@@ -29,3 +29,16 @@ xorGate = do
 	connectWire64 ao ad
 	connectWire64 no nor
 	return (ain, bin, xo)
+
+andNotBGate, orNotBGate :: CircuitBuilder Wire21
+andNotBGate = do
+	(ni, no) <- notGate
+	(aa, ab, ao) <- andGate
+	connectWire64 no ab
+	return (aa, ni, ao)
+
+orNotBGate = do
+	(ni, no) <- notGate
+	(aa, ab, ao) <- orGate
+	connectWire64 no ab
+	return (aa, ni, ao)
