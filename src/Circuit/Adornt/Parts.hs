@@ -3,12 +3,16 @@
 
 module Circuit.Adornt.Parts (
 	xorGate, nandGate, norGate, andNotBGate, orNotBGate,
-	multiple ) where
+	multiple, decoder ) where
 
 import Control.Arrow
+import Control.Monad
+import Data.Foldable
 import Data.Word
 
 import Circuit.Adornt.Builder
+
+import Tools
 
 nandGate, norGate :: CircuitBuilder Wire21
 nandGate = do
@@ -60,3 +64,25 @@ multiple g n = do
 	connectWire64 o1 a
 	connectWire64 o2 b
 	return (is1 ++ is2, o)
+
+decoderGen :: Word16 -> CircuitBuilder ([IWire], [OWire])
+decoderGen n = do
+	(is, ois) <- unzip <$> fromIntegral m `replicateM` idGate
+	(ias, oas) <- unzip <$> fromIntegral n `replicateM` multiple andGate m
+	zipWithM_ ((sequence_ .) . flip (zipWith3 id) ois)
+		(binary (inverse, obverse) m) ias
+	return (is, oas)
+	where m = log2 n
+
+decoder :: Word16 -> CircuitBuilder (IWire, [OWire])
+decoder n = do
+	(iin, iout) <- idGate
+	(is, decs) <- decoderGen n
+	for_ (zip [0 ..] is) $ \(ix, iw) -> connectWire (iout, 1, ix) (iw, 1, 0)
+	return (iin, decs)
+
+inverse, obverse :: OWire -> IWire -> CircuitBuilder ()
+inverse o i = do
+	(ni, no) <- notGate
+	zipWithM_ connectWire64 [o, no] [ni, i]
+obverse = connectWire64

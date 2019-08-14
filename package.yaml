@@ -25,6 +25,8 @@ dependencies:
 
 library:
   source-dirs: src
+  exposed-modules:
+    - Circuit.Adornt.Parts
 
 tests:
   circuit-adornt-parts-test:
