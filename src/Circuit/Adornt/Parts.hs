@@ -1,6 +1,12 @@
+{-# LANGUAGE TupleSections #-}
 {-# OPTIONS_GHC -Wall -fno-warn-tabs #-}
 
-module Circuit.Adornt.Parts (nandGate, norGate, xorGate, andNotBGate, orNotBGate) where
+module Circuit.Adornt.Parts (
+	xorGate, nandGate, norGate, andNotBGate, orNotBGate,
+	multiple ) where
+
+import Control.Arrow
+import Data.Word
 
 import Circuit.Adornt.Builder
 
@@ -42,3 +48,15 @@ orNotBGate = do
 	(aa, ab, ao) <- orGate
 	connectWire64 no ab
 	return (aa, ni, ao)
+
+multiple :: CircuitBuilder Wire21 -> Word16 -> CircuitBuilder ([IWire], OWire)
+multiple _ 0 = ([] ,) <$> constGate 0
+multiple _ 1 = first (: []) <$> idGate
+multiple g 2 = (\(a, b, o) -> ([a, b], o)) <$> g
+multiple g n = do
+	(is1, o1) <- multiple g (n `div` 2)
+	(is2, o2) <- multiple g (n - n `div` 2)
+	(a, b, o) <- g
+	connectWire64 o1 a
+	connectWire64 o2 b
+	return (is1 ++ is2, o)
