@@ -3,7 +3,7 @@
 
 module Circuit.Adornt.Parts (
 	xorGate, nandGate, norGate, andNotBGate, orNotBGate,
-	multiple, decoder ) where
+	multiple, decoder, multiplexer ) where
 
 import Control.Arrow
 import Control.Monad
@@ -86,3 +86,12 @@ inverse o i = do
 	(ni, no) <- notGate
 	zipWithM_ connectWire64 [o, no] [ni, i]
 obverse = connectWire64
+
+multiplexer :: Word16 -> CircuitBuilder (IWire, [IWire], OWire)
+multiplexer n = do
+	(slin, douts) <- decoder n
+	(as, bs, os) <- unzip3 <$> fromIntegral n `replicateM` andGate
+	(ois, oo) <- multiple orGate n
+	zipWithM_ connectWire0_64 douts as
+	zipWithM_ connectWire64 os ois
+	return (slin, bs, oo)
