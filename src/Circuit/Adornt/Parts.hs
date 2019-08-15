@@ -20,13 +20,13 @@ mux2 = do
 	let	(i0, i1) = listToTuple2 is
 	return (sl, i0, i1, o)
 
-mux3 :: CircuitBuilder (IWire, IWire, IWire, IWire, OWire)
+mux3 :: CircuitBuilder Wire41
 mux3 = do
 	(sl, is, o) <- multiplexer 3
 	let	(i0, i1, i2) = listToTuple3 is
 	return (sl, i0, i1, i2, o)
 
-mux4 :: CircuitBuilder (IWire, IWire, IWire, IWire, IWire, OWire)
+mux4 :: CircuitBuilder Wire51
 mux4 = do
 	(sl, is, o) <- multiplexer 4
 	let	(i0, i1, i2, i3) = listToTuple4 is
