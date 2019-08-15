@@ -13,6 +13,8 @@ module Circuit.Adornt.Parts (
 	pla8,
 	-- * Zero Detector
 	zeroDetector,
+	-- * Carry Lookahead
+	carries,
 	-- * Memory
 	srlatch, dlatch, dflipflop
 	) where
@@ -20,6 +22,7 @@ module Circuit.Adornt.Parts (
 import Circuit.Adornt.Builder
 
 import Circuit.Adornt.PartsBasic
+import CarryLookahead2
 import Tools
 
 andGate3, orGate3, xorGate3 :: CircuitBuilder Wire31
