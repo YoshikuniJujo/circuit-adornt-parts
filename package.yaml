@@ -27,6 +27,7 @@ library:
   source-dirs: src
   exposed-modules:
     - Circuit.Adornt.Parts
+    - Circuit.Adornt.Parts.CarryLookahead4
 
 tests:
   circuit-adornt-parts-test:
