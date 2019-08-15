@@ -9,6 +9,8 @@ module Circuit.Adornt.Parts (
 	mux2, mux3, mux4,
 	-- * Multiple Input Wires
 	multiple, decoder, multiplexer,
+	-- * PLA
+	pla8,
 	-- * Memory
 	srlatch, dlatch, dflipflop
 	) where
