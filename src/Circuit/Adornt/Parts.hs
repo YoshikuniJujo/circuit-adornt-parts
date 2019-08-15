@@ -11,6 +11,8 @@ module Circuit.Adornt.Parts (
 	multiple, decoder, multiplexer,
 	-- * PLA
 	pla8,
+	-- * Zero Detector
+	zeroDetector,
 	-- * Memory
 	srlatch, dlatch, dflipflop
 	) where

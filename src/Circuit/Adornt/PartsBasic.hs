@@ -3,7 +3,7 @@
 
 module Circuit.Adornt.PartsBasic (
 	xorGate, nandGate, norGate, andNotBGate, orNotBGate,
-	multiple, decoder, multiplexer, pla8,
+	multiple, decoder, multiplexer, pla8, zeroDetector,
 	srlatch, dlatch, dflipflop ) where
 
 import Control.Arrow
@@ -152,6 +152,19 @@ pla1 iouts tbl1 = do
 		(ni, no) <- notGate
 		connectWire0 o ni
 		return  (no, o)
+
+zeroDetector :: CircuitBuilder (IWire, OWire)
+zeroDetector = do
+	(iin, iout) <- idGate
+	(ois, oo) <- multiple orGate 64
+	(ni, no) <- notGate
+	for_ (zip [0 ..] ois) $ \(i, oi) -> connectWire (iout, 1, i) (oi, 1, 0)
+	connectWire0 oo ni
+	(oin, oout) <- idGate
+	connectWire0 no oin
+	cz <- constGate 0
+	connectWire (cz, 63, 0) (oin, 63, 1)
+	return (iin, oout)
 
 srlatch :: CircuitBuilder Wire22
 srlatch = do
