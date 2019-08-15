@@ -8,7 +8,10 @@ module Circuit.Adornt.Parts (
 	andGate3, andGate4, orGate3, orGate4, xorGate3, xorGate4,
 	mux2, mux3, mux4,
 	-- * Multiple Input Wires
-	multiple, decoder, multiplexer ) where
+	multiple, decoder, multiplexer,
+	-- * Memory
+	srlatch, dlatch, dflipflop
+	) where
 
 import Circuit.Adornt.Builder
 
