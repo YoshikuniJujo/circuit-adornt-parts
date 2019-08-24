@@ -3,7 +3,7 @@
 
 module Circuit.Adornt.Parts (
 	-- * Simple Parts
-	xorGate, nandGate, norGate, andNotBGate, orNotBGate,
+	xorGate, xorGate', nandGate, norGate, andNotBGate, orNotBGate,
 	-- * 2, 3, 4 Input Wires
 	andGate3, andGate4, orGate3, orGate4, xorGate3, xorGate4,
 	mux2, mux3, mux4,
@@ -24,6 +24,12 @@ import Circuit.Adornt.Builder
 import Circuit.Adornt.PartsBasic
 import CarryLookahead2
 import Tools
+
+xorGate' :: CircuitBuilder Wire21
+xorGate' = do
+	abo@(a, b, o) <- xorGate
+	putNamedBlock "xor" [a, b] [o]
+	return abo
 
 andGate3, orGate3, xorGate3 :: CircuitBuilder Wire31
 [andGate3, orGate3, xorGate3] = multi3 <$> [andGate, orGate, xorGate]
