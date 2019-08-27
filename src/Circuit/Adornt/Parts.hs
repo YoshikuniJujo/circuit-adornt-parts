@@ -6,9 +6,9 @@ module Circuit.Adornt.Parts (
 	xorGate, xorGate', nandGate, norGate, andNotBGate, orNotBGate,
 	-- * 2, 3, 4 Input Wires
 	andGate3, andGate4, orGate3, orGate4, xorGate3, xorGate4,
-	mux2, mux3, mux4,
+	mux2, mux2', mux3, mux3', mux4, mux4',
 	-- * Multiple Input Wires
-	multiple, multiple', decoder, multiplexer,
+	multiple, multiple', decoder, multiplexer, multiplexer',
 	-- * PLA
 	pla8,
 	-- * Zero Detector
@@ -51,26 +51,47 @@ multi4 g = do
 	let	(i0, i1, i2, i3) = listToTuple4 is
 	return (i0, i1, i2, i3, o)
 
-mux2 :: CircuitBuilder Wire31
-mux2 = do
-	(sl, is, o) <- multiplexer 2
+mux2, mux2' :: CircuitBuilder Wire31
+mux2 = mux2Gen multiplexer
+mux2' = mux2Gen multiplexer'
+
+mux2Gen :: (Word16 -> CircuitBuilder (IWire, [IWire], OWire)) ->
+	CircuitBuilder Wire31
+mux2Gen mx = do
+	(sl, is, o) <- mx 2
 	let	(i0, i1) = listToTuple2 is
 	return (sl, i0, i1, o)
 
-mux3 :: CircuitBuilder Wire41
-mux3 = do
-	(sl, is, o) <- multiplexer 3
+mux3, mux3' :: CircuitBuilder Wire41
+mux3 = mux3Gen multiplexer
+mux3' = mux3Gen multiplexer'
+
+mux3Gen :: (Word16 -> CircuitBuilder (IWire, [IWire], OWire)) ->
+	CircuitBuilder Wire41
+mux3Gen mx = do
+	(sl, is, o) <- mx 3
 	let	(i0, i1, i2) = listToTuple3 is
 	return (sl, i0, i1, i2, o)
 
-mux4 :: CircuitBuilder Wire51
-mux4 = do
-	(sl, is, o) <- multiplexer 4
+mux4, mux4' :: CircuitBuilder Wire51
+mux4 = mux4Gen multiplexer
+mux4' = mux4Gen multiplexer'
+
+mux4Gen :: (Word16 -> CircuitBuilder (IWire, [IWire], OWire)) ->
+	CircuitBuilder Wire51
+mux4Gen mx = do
+	(sl, is, o) <- mx 4
 	let	(i0, i1, i2, i3) = listToTuple4 is
 	return (sl, i0, i1, i2, i3, o)
 
 multiple' :: BlockName -> CircuitBuilder Wire21 -> Word16 -> CircuitBuilder ([IWire], OWire)
 multiple' nm gt n = do
-	iso@(is, o) <- multiple gt n
+	ios@(is, o) <- multiple gt n
 	putNamedBlock (nm ++ "_" ++ show n) is [o]
-	return iso
+	return ios
+
+multiplexer' :: Word16 -> CircuitBuilder (IWire, [IWire], OWire)
+multiplexer' n = do
+	ios@(s, is, o) <- multiplexer n
+	putNamedBlock ("mux_" ++ show n) (s : is) [o]
+	return ios
